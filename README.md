@@ -1,2 +1,2 @@
 # RAG-Code-QA
-RAG question and answering for your code docs or just CODE
+Using Open source models and frameworks to answer questions about code base.
