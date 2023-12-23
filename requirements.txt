@@ -3,5 +3,7 @@ datasets
 loralib
 sentencepiece
 sentence_transformers
+InstructorEmbedding
+https://github.com/Asad-Ismail/AnglE.git
 langchain
 llama-index
