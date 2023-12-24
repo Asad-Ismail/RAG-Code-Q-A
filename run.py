@@ -24,7 +24,7 @@ parser.add_argument("--input_dir", type=str, default="/home/ec2-user/SageMaker/V
 parser.add_argument("--embed_device", type=str, default="cpu", choices=["auto", "cuda", "cpu"], help="Device for embeddings ('auto', 'cuda', 'cpu')")
 parser.add_argument("--llm_device", type=str, default="auto", choices=["auto", "cuda", "cpu"], help="Device for LLM ('auto', 'cuda', 'cpu')")
 parser.add_argument("--model_name", type=str, default="mistralai/Mistral-7B-Instruct-v0.1",help="Name of the model to use")
-parser.add_argument("--embedding_choice", type=str, default="st", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
+parser.add_argument("--embedding_choice", type=str, default="uae", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
 args = parser.parse_args()
 
 # Function Definitions
@@ -43,7 +43,7 @@ class UAEmbeddings(BaseEmbedding):
     ) -> None:
         
         super().__init__(**kwargs)  
-        self._model=AnglE.from_pretrained(instructor_model_name, pooling_strategy='cls',device="cpu")
+        self._model=AnglE.from_pretrained(instructor_model_name, pooling_strategy='cls',device=args.embed_device)
         #self._model.set_prompt(prompt=Prompts.C)
         logger.warn(f"Embedding device is {self._model.device}")
 
