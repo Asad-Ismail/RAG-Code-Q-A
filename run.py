@@ -1,5 +1,8 @@
 import logging
 import sys
+import time
+import threading
+from colorama import Fore, Style
 from typing import Any, List
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -119,6 +122,13 @@ def choose_embedding_model(choice):
     else:
         raise ValueError(f"Invalid embedding choice: {choice}")
 
+def print_hourglass():
+    hourglass = ["⌛", "⏳"]
+    while not result_ready.is_set():
+        for icon in hourglass:
+            print(f"\r{icon} Processing...", end="")
+            time.sleep(0.5)
+
 def build_RAG():
     logger.info(f"Loading Data!!")
     reader = SimpleDirectoryReader(input_dir=args.input_dir, recursive=True, required_exts=[".py"],file_metadata=get_meta)
@@ -161,6 +171,9 @@ def build_RAG():
 if __name__ == "__main__":
 
     query_engine=build_RAG()
+    result_ready = threading.Event()
+    
+    '''
     questions = [
     "How is curved length of hot peppers calculated?",
     "How to turn on/off visulaizations of detection and phenotypes?",]
@@ -169,3 +182,23 @@ if __name__ == "__main__":
         result = query_engine.query(question)
         print(f"-> **Question**: {question} \n")
         print(f"**Answer**: {result} \n")
+    '''
+
+    while True:
+        question = input(f"{Fore.RED}Enter your question (or type 'quit' to exit): {Style.RESET_ALL}")
+        if question.lower() == 'quit':
+            break
+
+        # Reset the event for each new query
+        result_ready.clear()
+        # Start the hourglass animation in a separate thread
+        hourglass_thread = threading.Thread(target=print_hourglass)
+        hourglass_thread.start()
+        result = query_engine.query(question)
+        # Indicate that the result is ready, which stops the animation
+        result_ready.set()
+        hourglass_thread.join()  # Wait for the hourglass thread to finish
+        # Clear the hourglass line
+        print("\r", end="")
+        print(f"{Fore.RED}-> **Question**: {question} {Style.RESET_ALL}\n")
+        print(f"{Fore.GREEN}**Answer**: {result} {Style.RESET_ALL}\n")

@@ -7,3 +7,4 @@ InstructorEmbedding
 git+https://github.com/Asad-Ismail/AnglE.git
 langchain
 llama-index
+colorama
