@@ -21,13 +21,16 @@ import argparse
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+#set seeding
+torch.manual_seed(0)
+
 # Argument Parsing
 parser = argparse.ArgumentParser(description="Script Configuration")
 parser.add_argument("--input_dir", type=str, default="/home/ec2-user/SageMaker/VegRD_APD_Fruit_Phenotyping/scripts",help="Directory containing the scripts")
 parser.add_argument("--embed_device", type=str, default="cpu", choices=["auto", "cuda", "cpu"], help="Device for embeddings ('auto', 'cuda', 'cpu')")
 parser.add_argument("--llm_device", type=str, default="auto", choices=["auto", "cuda", "cpu"], help="Device for LLM ('auto', 'cuda', 'cpu')")
 parser.add_argument("--model_name", type=str, default="mistralai/Mistral-7B-Instruct-v0.1",help="Name of the model to use")
-parser.add_argument("--embedding_choice", type=str, default="uae", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
+parser.add_argument("--embedding_choice", type=str, default="instructor", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
 args = parser.parse_args()
 
 # Function Definitions
@@ -140,10 +143,10 @@ def build_RAG():
     logger.info(f"Loading LLM Model!!")
 
     llm = HuggingFaceLLM(
-        context_window=4096,
+        context_window=40096,
         max_new_tokens=1000,
-        generate_kwargs={"temperature": 0.1, "do_sample": True},
-        system_prompt="You are a Q&A assistant...",
+        generate_kwargs={"temperature": 0.1, "do_sample": False},
+        system_prompt="You are a Q&A assistant to explain the code, please answer only using the code and context given...",
         query_wrapper_prompt="{query_str}",
         tokenizer_name=args.model_name,
         model_name=args.model_name,
