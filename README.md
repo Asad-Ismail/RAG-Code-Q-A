@@ -23,3 +23,14 @@ Clone the repository to your local machine:
 ```bash
 git clone https://github.com/Asad-Ismail/RAF_CODE-QA.git
 ```
+
+Install requriements:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Ask Questions
+
+
+

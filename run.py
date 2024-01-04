@@ -146,8 +146,8 @@ def build_RAG():
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
     llm = HuggingFaceLLM(
-        context_window=40096,
-        max_new_tokens=1000,
+        context_window=32768,
+        max_new_tokens=10000,
         generate_kwargs={"do_sample": False,"pad_token_id": tokenizer.eos_token_id},
         system_prompt="You are a Q&A assistant to explain the code, please answer only using the code and context given...",
         query_wrapper_prompt="{query_str}",
@@ -164,7 +164,7 @@ def build_RAG():
     logger.info(f"LLM device and dtype are: {llm_device}, {llm_dtype}")
 
     service_context = ServiceContext.from_defaults(
-        chunk_size=40096,
+        chunk_size=1068,
         llm=llm,
         embed_model=embed_model
     )
