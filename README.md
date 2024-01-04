@@ -21,7 +21,7 @@ Before you begin, ensure you have met the following requirements:
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/Asad-Ismail/RAF_CODE-QA.git
+git clone https://github.com/Asad-Ismail/RAG_CODE-QA.git
 ```
 
 Install requriements:
@@ -32,5 +32,8 @@ pip install -r requirements.txt
 
 ## Ask Questions
 
+```bash
+python run.py --input_dir <path_to_scripts> --embed_device <device> --llm_device <device> --model_name <model_name> --embedding_choice <embedding_type>
+```
 
 
