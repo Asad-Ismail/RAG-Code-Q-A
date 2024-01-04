@@ -14,6 +14,7 @@ from llama_index.bridge.pydantic import PrivateAttr
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from InstructorEmbedding import INSTRUCTOR
+from transformers import AutoTokenizer
 from angle_emb import AnglE, Prompts
 import argparse
 
@@ -142,10 +143,12 @@ def build_RAG():
 
     logger.info(f"Loading LLM Model!!")
 
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+
     llm = HuggingFaceLLM(
         context_window=40096,
         max_new_tokens=1000,
-        generate_kwargs={"temperature": 0.1, "do_sample": False},
+        generate_kwargs={"do_sample": False,"pad_token_id": tokenizer.eos_token_id},
         system_prompt="You are a Q&A assistant to explain the code, please answer only using the code and context given...",
         query_wrapper_prompt="{query_str}",
         tokenizer_name=args.model_name,
@@ -161,7 +164,7 @@ def build_RAG():
     logger.info(f"LLM device and dtype are: {llm_device}, {llm_dtype}")
 
     service_context = ServiceContext.from_defaults(
-        chunk_size=1024,
+        chunk_size=40096,
         llm=llm,
         embed_model=embed_model
     )
