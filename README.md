@@ -2,6 +2,16 @@
 
 This repository contains a Python script that leverages the power of Retrieval-Augmented Generation (RAG) to explain and understand code snippets. It integrates Transformers, LLaMA index, Langchain embeddings, and custom embeddings to provide comprehensive and understandable explanations of code.
 
+
+<p align="center">
+  <img src="artifacts/phenome.gif" alt="animated" />
+</p>
+
+<p align="center">
+  <img src="artifacts/scalecam.gif" alt="animated" />
+</p>
+
+
 ## Features
 
 - **Transformers Integration**: Uses AutoModelForCausalLM and AutoTokenizer from the Hugging Face's Transformers library.
@@ -11,7 +21,7 @@ This repository contains a Python script that leverages the power of Retrieval-A
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you begin, ensure you have the following requirements:
 
 - Python 3.x
 - Pip (Python package installer)

@@ -6,11 +6,12 @@ from colorama import Fore, Style
 from typing import Any, List
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext
+from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext, PromptHelper
 from llama_index.llms import HuggingFaceLLM
 from llama_index.prompts.prompts import SimpleInputPrompt
 from llama_index.embeddings.base import BaseEmbedding
 from llama_index.bridge.pydantic import PrivateAttr
+from llama_index.text_splitter import SentenceSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from InstructorEmbedding import INSTRUCTOR
@@ -31,7 +32,7 @@ parser.add_argument("--input_dir", type=str, default="/home/ec2-user/SageMaker/V
 parser.add_argument("--embed_device", type=str, default="cpu", choices=["auto", "cuda", "cpu"], help="Device for embeddings ('auto', 'cuda', 'cpu')")
 parser.add_argument("--llm_device", type=str, default="auto", choices=["auto", "cuda", "cpu"], help="Device for LLM ('auto', 'cuda', 'cpu')")
 parser.add_argument("--model_name", type=str, default="mistralai/Mistral-7B-Instruct-v0.1",help="Name of the model to use")
-parser.add_argument("--embedding_choice", type=str, default="instructor", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
+parser.add_argument("--embedding_choice", type=str, default="uae", choices=['st', 'bge', 'uae', 'instructor'],help="Embedding model to use ('st', 'bge', 'uae', 'instructor')")
 args = parser.parse_args()
 
 # Function Definitions
@@ -146,10 +147,10 @@ def build_RAG():
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
     llm = HuggingFaceLLM(
-        context_window=32768,
+        context_window=4096,
         max_new_tokens=10000,
-        generate_kwargs={"do_sample": False,"pad_token_id": tokenizer.eos_token_id},
-        system_prompt="You are a Q&A assistant to explain the code, please answer only using the code and context given...",
+        generate_kwargs={"do_sample": True,"pad_token_id": tokenizer.eos_token_id,"temperature": 0.01},
+        system_prompt="You are a Q&A assistant to explain the code, please answer only using the code and context given and explain the underlying idea of what code is trying to achieve...",
         query_wrapper_prompt="{query_str}",
         tokenizer_name=args.model_name,
         model_name=args.model_name,
@@ -163,11 +164,27 @@ def build_RAG():
     llm_dtype = first_param.dtype
     logger.info(f"LLM device and dtype are: {llm_device}, {llm_dtype}")
 
-    service_context = ServiceContext.from_defaults(
-        chunk_size=1068,
-        llm=llm,
-        embed_model=embed_model
+
+    text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=100)
+    prompt_helper = PromptHelper(
+        context_window=4096,
+        num_output=256,
+        chunk_overlap_ratio=0.1,
+        chunk_size_limit=None,
     )
+
+    #service_context = ServiceContext.from_defaults(
+    #    chunk_size=1024,
+    #    llm=llm,
+    #    embed_model=embed_model
+    #)
+
+    service_context = ServiceContext.from_defaults(
+    llm=llm,
+    embed_model=embed_model,
+    text_splitter=text_splitter,
+    prompt_helper=prompt_helper)
+
     logger.info(f"Building Index!!")
     index = VectorStoreIndex.from_documents(documents, service_context=service_context)
     query_engine = index.as_query_engine()
