@@ -11,7 +11,7 @@ This repository contains a Python script that leverages the power of Retrieval-A
 ## RAG Example 2
 
 <p align="center">
-  <img src="artifacts/scalecam.gif" alt="animated" width="700" height="700" />
+  <img src="artifacts/scalecam.gif" alt="animated" width="800" height="500" />
 </p>
 
 Note: (Generation Visualization is 5x speed up)
