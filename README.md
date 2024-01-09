@@ -2,17 +2,19 @@
 
 This repository contains a Python script that leverages the power of Retrieval-Augmented Generation (RAG) to explain and understand code snippets. It integrates Transformers, LLaMA index, Langchain embeddings, and custom embeddings to provide comprehensive and understandable explanations of code.
 
-## Example 1
+## RAG example 1 
 
 <p align="center">
   <img src="artifacts/phenome.gif" alt="animated" width="800" height="500" />
 </p>
 
-## Example 2
+## RAG Example 2
 
 <p align="center">
   <img src="artifacts/scalecam.gif" alt="animated" width="700" height="700" />
 </p>
+
+Note: (Generation Visualization is 5x speed up)
 
 ## Features
 
