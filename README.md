@@ -4,11 +4,11 @@ This repository contains a Python script that leverages the power of Retrieval-A
 
 
 <p align="center">
-  <img src="artifacts/phenome.gif" alt="animated" width="500" height="500 />
+  <img src="artifacts/phenome.gif" alt="animated" width="700" height="700 />
 </p>
 
 <p align="center">
-  <img src="artifacts/scalecam.gif" alt="animated" width="500" height="500 />
+  <img src="artifacts/scalecam.gif" alt="animated" width="700" height="700 />
 </p>
 
 
